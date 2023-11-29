@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from 'react-query';
-import axios from 'axios';
 import { endpoints } from '../endpoints';
 import { BookScheme } from './BookScheme';
-import { queryClient } from '../config';
+import { $axios, queryClient } from '../config';
 import { toast } from '../../utils/toaster/use-toast';
 
 export const useBooksApi = (filter: string, raitingFilter: number | null) => {
@@ -17,7 +16,7 @@ export const useBooksApi = (filter: string, raitingFilter: number | null) => {
   } = useQuery(
     [endpoints.books, filter, raitingFilter],
     () => {
-      return axios.get<BookScheme[]>(`${endpoints.books}`, {
+      return $axios.get<BookScheme[]>(`${endpoints.books}`, {
         params: { filters: filter, rating: raitingFilter }
       });
     },
@@ -52,7 +51,7 @@ export const useBookByIdApi = (id: string) => {
   } = useQuery(
     `${endpoints.books}/${id}`,
     () => {
-      return axios.get<BookScheme>(`${endpoints.books}/${id}`);
+      return $axios.get<BookScheme>(`${endpoints.books}/${id}`);
     },
     {
       select(data) {
@@ -77,7 +76,7 @@ export const useCreateBookApi = () => {
   const { isLoading, isError, isSuccess, mutate, data } = useMutation(
     `${endpoints.books}-create`,
     (book: Pick<BookScheme, 'title' | 'author'>) => {
-      return axios.post<BookScheme>(endpoints.books, book);
+      return $axios.post<BookScheme>(endpoints.books, book);
     },
     {
       onSuccess() {
@@ -102,7 +101,7 @@ export const useEditBookApi = (id: string) => {
   const { isLoading, isError, isSuccess, mutate, data } = useMutation(
     `${endpoints.books}-edit/${id}`,
     (book: Partial<BookScheme>) => {
-      return axios.patch<BookScheme>(`${endpoints.books}/${id}`, book);
+      return $axios.patch<BookScheme>(`${endpoints.books}/${id}`, book);
     },
     {
       onSuccess() {
@@ -127,7 +126,7 @@ export const useDeleteBookApi = (id: string) => {
   const { isLoading, isError, isSuccess, mutate, data } = useMutation(
     `${endpoints.books}-delete/${id}`,
     () => {
-      return axios.delete<BookScheme>(`${endpoints.books}/${id}`);
+      return $axios.delete<BookScheme>(`${endpoints.books}/${id}`);
     },
     {
       onSuccess() {

@@ -9,7 +9,4 @@ export const queryClient = new QueryClient({
   }
 });
 
-axios.interceptors.request.use((config) => ({
-  ...config,
-  baseURL: process.env.API_URL
-}));
+export const $axios = axios.create();
