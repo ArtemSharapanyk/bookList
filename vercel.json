@@ -7,6 +7,10 @@
     {
       "source": "/:path*/",
       "destination": "https://book-list-api-1d3adsf.vercel.app/:path*/"
+    },
+    {
+      "source": "/:path*/",
+      "destination": "https://book-list-api-1d3adsf.vercel.app/:path*/:path*/"
     }
   ]
 }
