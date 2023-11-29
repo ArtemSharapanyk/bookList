@@ -7,6 +7,8 @@ import { Button } from '../../../components/ui/Button/Button';
 import { Alert, AlertDescription, AlertTitle } from '../../../components/ui/Alert/Alert';
 import { RatingWithAction } from '../../../components/ui/Rating/RatingWithAction';
 
+console.log('ss');
+
 export const BookList = () => {
   const [filter, setFilter] = useState<'all' | 'read' | 'not_read_yet'>('all');
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);
