@@ -1,59 +1,32 @@
-import React, { useState, useRef, FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { MdOutlineStar, MdOutlineStarBorder } from 'react-icons/md';
+import { useRatingAction } from './useRating';
+import { calculateStarStateWithAction } from './helpers';
 
-const precision = 0.5;
-const totalStars = 5;
 const emptyIcon = MdOutlineStarBorder;
 const filledIcon = MdOutlineStar;
 
 const mockArray = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
 
 interface Props {
-  setFilter: React.Dispatch<React.SetStateAction<number | null>>;
-  filterStatus: number | null;
+  // eslint-disable-next-line no-unused-vars
+  handleAction: (rating: number) => void;
+  parentRating: number | null;
 }
 
-export const RatingWithAction: FC<Props> = ({ filterStatus, setFilter }) => {
-  const [activeStar, setActiveStar] = useState(-1);
-  const [hoverActiveStar, setHoverActiveStar] = useState(-1);
-  const [isHovered, setIsHovered] = useState(false);
-  const ratingContainerRef = useRef<HTMLDivElement>(null);
+export const RatingWithAction: FC<Props> = ({ parentRating, handleAction }) => {
+  const {
+    activeStar,
+    handleClick,
+    handleMouseLeave,
+    handleMouseMove,
+    isHovered,
+    hoverActiveStar,
+    ratingContainerRef
+  } = useRatingAction(handleAction, parentRating);
 
-  const calculateRating = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // @ts-ignore
-    const { width, left } = ratingContainerRef?.current?.getBoundingClientRect();
-    const percent = (e.clientX - left) / width;
-    const numberInStars = percent * totalStars;
-    const nearestNumber = Math.round((numberInStars + precision / 2) / precision) * precision;
-
-    return Number(nearestNumber.toFixed(precision.toString().split('.')[1]?.length || 0));
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setIsHovered(false);
-    const activeStar = calculateRating(e);
-    setActiveStar(activeStar);
-    setFilter(activeStar * 2);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setIsHovered(true);
-    setHoverActiveStar(calculateRating(e));
-  };
-
-  const handleMouseLeave = () => {
-    setHoverActiveStar(-1);
-    setIsHovered(false);
-  };
   const EmptyIcon = emptyIcon;
   const FilledIcon = filledIcon;
-
-  useEffect(() => {
-    if (filterStatus !== activeStar * 2) {
-      setActiveStar(-1);
-      setIsHovered(false);
-    }
-  }, [filterStatus, activeStar]);
 
   return (
     <div
@@ -63,16 +36,8 @@ export const RatingWithAction: FC<Props> = ({ filterStatus, setFilter }) => {
       onMouseLeave={handleMouseLeave}
       ref={ratingContainerRef}>
       {mockArray.map((element, index) => {
-        const activeState = isHovered ? hoverActiveStar : activeStar;
-
-        const showEmptyIcon = activeState === -1 || activeState < index + 1;
-
-        const isActiveRating = activeState !== 1;
-        const isRatingWithPrecision = activeState % 1 !== 0;
-        const isRatingEqualToIndex = Math.ceil(activeState) === index + 1;
-        const showRatingWithPrecision =
-          isActiveRating && isRatingWithPrecision && isRatingEqualToIndex;
-
+        const { activeState, showEmptyIcon, showRatingWithPrecision } =
+          calculateStarStateWithAction({ activeStar, index, isHovered, hoverActiveStar });
         return (
           <div className="relative cursor-pointer" key={element}>
             <div

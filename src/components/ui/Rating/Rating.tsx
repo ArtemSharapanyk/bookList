@@ -1,5 +1,6 @@
 import React, { useState, FC, useEffect } from 'react';
 import { MdOutlineStar, MdOutlineStarBorder } from 'react-icons/md';
+import { calculateStarState } from './helpers';
 
 const emptyIcon = MdOutlineStarBorder;
 const filledIcon = MdOutlineStar;
@@ -26,15 +27,10 @@ export const Rating: FC<Props> = ({ rating }) => {
   return (
     <div className="flex relative cursor-pointer text-left">
       {mockArray.map((element, index) => {
-        const activeState = activeStar;
-
-        const showEmptyIcon = activeState === -1 || activeState < index + 1;
-
-        const isActiveRating = activeState !== 1;
-        const isRatingWithPrecision = activeState % 1 !== 0;
-        const isRatingEqualToIndex = Math.ceil(activeState) === index + 1;
-        const showRatingWithPrecision =
-          isActiveRating && isRatingWithPrecision && isRatingEqualToIndex;
+        const { showEmptyIcon, showRatingWithPrecision, activeState } = calculateStarState(
+          activeStar,
+          index
+        );
 
         return (
           <div className="relative cursor-pointer" key={element}>

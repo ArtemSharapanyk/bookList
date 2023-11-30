@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useBooksApi } from '../../../api/books/booksApi';
 import { Loader } from '../../../components/ui/Loader/Loader';
 import { BookCard } from '../BookCard/BookCard';
@@ -17,6 +17,10 @@ export const BookList = () => {
     setRatingFilter(null);
   };
 
+  const handleRatingAction = useCallback((rating: number) => {
+    setRatingFilter(rating);
+  }, []);
+
   const isDataEmpty = !books?.length;
   const isDataLoading = isLoading || isRefetching;
 
@@ -29,7 +33,7 @@ export const BookList = () => {
             Clear filters
           </Button>
         </div>
-        <RatingWithAction filterStatus={ratingFilter} setFilter={setRatingFilter} />
+        <RatingWithAction handleAction={handleRatingAction} parentRating={ratingFilter} />
       </div>
 
       {isDataLoading ? (
