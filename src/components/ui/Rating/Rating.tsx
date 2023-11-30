@@ -17,11 +17,14 @@ export const Rating: FC<Props> = ({ rating }) => {
   const FilledIcon = filledIcon;
 
   useEffect(() => {
+    const startedStarsState = -1;
     if (!rating) {
-      return setActiveStar(-1);
+      return setActiveStar(startedStarsState);
     }
 
-    setActiveStar(rating / 2);
+    const starsStatesFromRating = rating / 2;
+
+    setActiveStar(starsStatesFromRating);
   }, []);
 
   return (
